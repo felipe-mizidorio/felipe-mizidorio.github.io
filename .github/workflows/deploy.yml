@@ -17,7 +17,7 @@ jobs:
             - name: Checkout
               uses: actions/checkout@v6
             - name: Build and upload
-              uses: withastro/actions@v6
+              uses: withastro/action@v6
     
     deploy:
         needs: build
