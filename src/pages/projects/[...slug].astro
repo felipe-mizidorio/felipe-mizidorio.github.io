@@ -1,0 +1,65 @@
+---
+import { getCollection, render } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+
+export async function getStaticPaths() {
+    const projects = await getCollection("projects");
+    return projects.map((project) => ({
+        params: { slug: project.id },
+        props: project,
+    }));
+}
+
+const project = Astro.props;
+const { Content } = await render(project);
+---
+
+<BaseLayout title={`${project.data.title} | Projects`} description={project.data.description}>
+    <Header />
+    <main class="mx-auto max-w-3x1 px-6 py-20">
+        <article>
+            <h1 class="text-4x1 font-bold">{project.data.title}</h1>
+            <p class="mt-2 text-lg text-zinc-400 [.light_&]:text-zinc-600">
+                {project.data.description}
+            </p>
+
+            <div class="mt-4 flex flex-wrap gap-2">
+                {project.data.technologies.map((tech) => (
+                    <span class="rounded-full bg-zinc-800 [.light_&]:bg-zinc-100 px-3 py-1 text-xs text-zinc-300 [.light_&]:text-zinc-600">
+                        {tech}
+                    </span>
+                ))}
+            </div>
+
+            <div class="mt-4 flex gap-4 text-sm">
+                {project.data.repoUrl && (
+                    <a
+                        href={project.data.repoUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="text-primary-400 hover:underline"
+                    >
+                        Repository
+                    </a>
+                )}
+                {project.data.liveUrl && (
+                    <a
+                        href={project.data.liveUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="text-primary-400 hover:underline"
+                    >
+                        Demo
+                    </a>
+                )}
+            </div>
+
+            <div class="prose prose-invert [.light_&]:prose mt-10 max-w-none">
+                <Content />
+            </div>
+        </article>
+    </main>
+    <Footer />
+</BaseLayout>
