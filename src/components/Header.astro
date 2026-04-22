@@ -11,25 +11,25 @@ const currentPath = Astro.url.pathname;
 ---
 
 <header class="border-b border-zinc-800 [.light_&]:border-zinc-200">
-    <nav class="mx-auto flex max-w-3xl items-center justify-between px-6 py-4">
+    <nav class="mx-auto flex max-w-2xl items-center justify-between px-6 py-4">
         <a href="/" class="text-lg font-bold tracking-tight">
-            Felipe Mizidorio
+            FM
         </a>
 
         <div class="flex items-center gap-6">
             {
                 navLinks.map((link) => (
                     <a
-                    href={link.href}
-                    class:list={[
-                        "text-sm transition-colors",
-                        currentPath === link.href ||
-                        (link.href !== "/" && currentPath.startsWith(link.href))
-                        ? "text-primary-400 font-medium"
-                        : "text-zinc-400 hover:text-zinc-100 [.light_&]:text-zinc-600 [.light_&]:hover:text-zinc-900",
-                    ]}
+                        href={link.href}
+                        class:list={[
+                            "text-sm transition-colors",
+                            currentPath === link.href ||
+                            (link.href !== "/" && currentPath.startsWith(link.href))
+                            ? "text-accent font-medium"
+                            : "text-zinc-400 hover:text-zinc-100 [.light_&]:text-zinc-600 [.light_&]:hover:text-zinc-900",
+                        ]}
                     >
-                    {link.label}
+                        {link.label}
                     </a>
                 ))
                 }

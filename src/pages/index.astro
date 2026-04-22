@@ -1,16 +1,74 @@
 ---
+import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
+
+const recentPosts = (await getCollection("blog"))
+	.filter((post) => !post.data.draft)
+	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+	.slice(0, 3);
 ---
 
 <BaseLayout title="Felipe Mizidorio">
 	<Header />
-		<main class="mx-auto max-w-3x1 px-6 py-20">
-			<h1 class="text-4x1 font-bold">Hello, I'm Felipe!</h1>
-			<p class="mt-4 text-lg text-zinc-400 [.light_&]:text-zinc-600">
-				Welcome to my personal workspace. Here I share papers, projects and research.
-			</p>
+		<main class="mx-auto max-w-2x1 px-6">
+			<section class="py-24">
+				<h1 class="text-4x1 font-bold leading-tight tracking-tight sm:text-5x1">
+					Felipe MIzidorio
+				</h1>
+				<p class="mt-4 text-lg text-zinc-400 [.light_&]:text-zinc-600">
+					Software developer. I wrote about technology, share projects and document my learning.
+				</p>
+
+				<div class="mt-6 flex gap-4">
+					<a
+						href="/blog"
+						class="text-sm font-medium text-accent hover:text-accent-hover transition-colors"
+					>
+						Read blog &rarr;
+					</a>
+					<a
+						href="/projects"
+						class="text-sm font-medium text-zinc-400 hover:text-zinc-100 [.light_&]:hover:text-zinc-900 transition-colors"
+					>
+						View projects
+					</a>
+				</div>
+			</section>
+
+			{recentPosts.length > 0 && (
+				<section class="border-t border-zinc-800 [.light_&]:border-zinc-200 py-16">
+					<h2 class="text-sm font-medium uppercase tracking-widest text-zinc-500">
+						Recent articles
+					</h2>
+					<ul class="mt-8 space-y-6">
+						{recentPosts.map((post) => (
+							<li>
+								<a href={`/bog/${post.id}`} class="group block">
+									<div class="flex items-baseline justify-between gap-4">
+										<h3 class="font-medium group-hover:text-accent transition-colors">
+											{post.data.title}
+										</h3>
+										<time
+											datetime={post.data.pubDate.toISOString()}
+											class="shrink-0 text-sm text-zinc-500"
+										>
+											{post.data.pubDate.toLocaleDateString("pt-BR", {
+												month: "short",
+												year: "numeric",
+											})}
+										</time>
+									</div>
+									<p class="mt-1 text-sm text-zinc-400 [.light_&]:text-zinc-600">
+										{post.data.description}
+									</p>
+								</a>
+							</li>
+						))}
+					</ul>
+				</section>
+			)}
 		</main>
 	<Footer />
 </BaseLayout>

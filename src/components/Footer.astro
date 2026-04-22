@@ -3,7 +3,17 @@ const currentYear = new Date().getFullYear();
 ---
 
 <footer class="border-t border-zinc-800 [.light_&]:border-zinc-200">
-    <div class="mx-auto max-w-3xl px-6 py-8 text-center text-sm text-zinc-500">
-        <p>&copy; {currentYear} Felipe Mizidorio. All rights reserved.</p>
+    <div class="mx-auto max-w-2xl px-6 py-8 flex items-center justify-between text-sm text-zinc-500">
+        <p>&copy; {currentYear} Felipe Mizidorio</p>
+        <div class="flex gap-4">
+            <a
+                href="https://github.com/felipe-mizidorio"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="hover:text-zinc-100 [.light_&]:hover:text-zinc-900 transition-colors"
+            >
+              GitHub  
+            </a>
+        </div>
     </div>
 </footer>
