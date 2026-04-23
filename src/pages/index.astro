@@ -8,32 +8,103 @@ const recentPosts = (await getCollection("blog"))
 	.filter((post) => !post.data.draft)
 	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
 	.slice(0, 3);
+
+const stack = ["Python", "PyTorch", "Scikit-Learn", "Pandas", "Unity", "ML-Agents"]
 ---
 
-<BaseLayout title="Felipe Mizidorio">
+<BaseLayout
+	title="Felipe Merenda Izidorio"
+	description="Research Fellow at CeDRI, Instituto Politécnico de Bragança. AI researcher focused on reinforcement learning, multi-agent systems, and intelligent robotics."
+>
 	<Header />
-		<main class="mx-auto max-w-2x1 px-6">
-			<section class="py-24">
-				<h1 class="text-4x1 font-bold leading-tight tracking-tight sm:text-5x1">
-					Felipe MIzidorio
-				</h1>
-				<p class="mt-4 text-lg text-zinc-400 [.light_&]:text-zinc-600">
-					Software developer. I wrote about technology, share projects and document my learning.
-				</p>
+		<main class="mx-auto max-w-3xl px-6">
+			<section class="py-20">
+				<div class="flex items-start justify-between gap-8">
+					<div class="flex-1">
+						<h1 class="text-4xl font-bold leading-tight tracking-tight">
+							Felipe Merenda Izidorio
+						</h1>
+						<p class="mt-1 text-sm text-zinc-400 [.light_&]:text-zinc-600">
+							Research Fellow · CeDRI, Instituto Politécnico de Bragança
+						</p>
+						<p class="mt-5 max-w-lg leading-relaxed text-zinc-400 [.light_&]:text-zinc-600">
+							AI researcher focused on data-driven solutions and intelligent systems. I work on reinforcement learning for autonomous vehicles and multi-agent architectures for industrial fault diagnosis. Here I write about research, share projects, and document what I learn.
+						</p>
+		
+						<div class="mt-6 space-y-3 border-l border-zinc-700 pl-4 [.light_&]:border-zinc-300">
+							<div class="flex items-start justify-between gap-4">
+								<div>
+									<p class="text-sm font-medium">M.Sc. in Informatics Engineering</p>
+									<p class="text-xs text-zinc-500">IPB · Instituto Politécnico de Bragança</p>
+								</div>
+								<span class="shrink-0 text-xs text-zinc-500">2024 – 2025</span>
+							</div>
+							<div class="flex items-start justify-between gap-4">
+								<div>
+									<p class="text-sm font-medium">B.Sc. in Computer Science</p>
+									<p class="text-xs text-zinc-500">UTFPR · Universidade Tecnológica Federal do Paraná</p>
+								</div>
+								<span class="shrink-0 text-xs text-zinc-500">2021 – 2025</span>
+							</div>
+						</div>
+		
+						<div class="mt-6 flex flex-wrap gap-4">
+							<a
+								href="https://github.com/felipe-mizidorio"
+								target="_blank"
+								rel="noopener noreferrer"
+								class="text-sm text-zinc-400 transition-colors hover:text-zinc-100 [.light_&]:text-zinc-600 [.light_&]:hover:text-zinc-900"
+							>
+								GitHub
+							</a>
+							<a
+								href="https://www.linkedin.com/in/felipe-merenda-izidorio/"
+								target="_blank"
+								rel="noopener noreferrer"
+								class="text-sm text-zinc-400 transition-colors hover:text-zinc-100 [.light_&]:text-zinc-600 [.light_&]:hover:text-zinc-900"
+							>
+								LinkedIn
+							</a>
+							<a
+								href="mailto:felipemerenda1@gmail.com"
+								class="text-sm text-zinc-400 transition-colors hover:text-zinc-100 [.light_&]:text-zinc-600 [.light_&]:hover:text-zinc-900"
+							>
+								Email
+							</a>
+						</div>
+		
+						<div class="mt-6 flex gap-4">
+							<a
+								href="/blog"
+								class="text-sm font-medium text-accent hover:text-accent-hover transition-colors"
+							>
+								Read blog &rarr;
+							</a>
+							<a
+								href="/projects"
+								class="text-sm font-medium text-zinc-400 hover:text-zinc-100 [.light_&]:hover:text-zinc-900 transition-colors"
+							>
+								View projects
+							</a>
+						</div>
+					</div>
+	
+					<div class="hidden sm:flex h-24 w-24 shrink-0 items-center justify-center rounded-full bg-zinc-800 text-lg font-bold text-zinc-500 [.light_&]:bg-zinc-100">
+						FMI
+					</div>
+				</div>
+			</section>
 
-				<div class="mt-6 flex gap-4">
-					<a
-						href="/blog"
-						class="text-sm font-medium text-accent hover:text-accent-hover transition-colors"
-					>
-						Read blog &rarr;
-					</a>
-					<a
-						href="/projects"
-						class="text-sm font-medium text-zinc-400 hover:text-zinc-100 [.light_&]:hover:text-zinc-900 transition-colors"
-					>
-						View projects
-					</a>
+			<section class="border-t border-zinc-800 py-16 [.light_&]:border-zinc-200">
+				<h2 class="text-xs font-medium uppercase tracking-widest text-zinc-500">
+					Tools &amp; Technologies
+				</h2>
+				<div class="mt-5 flex flex-wrap gap-2">
+					{stack.map((tech) => (
+						<span class="rounded-full border border-zinc-700 px-3 py-1 text-sm text-zinc-400 [.light_&]:border-zinc-200 [.light_&]:text-zinc-600">
+							{tech}
+						</span>
+					))}
 				</div>
 			</section>
 
@@ -67,6 +138,9 @@ const recentPosts = (await getCollection("blog"))
 							</li>
 						))}
 					</ul>
+					<a href="/blog" class="mt-2 block text-sm text-zinc-500 transition-colors hover:text-zinc-300 [.light_&]:hover:text-zinc-700">
+						All articles &rarr;
+					</a>
 				</section>
 			)}
 		</main>
