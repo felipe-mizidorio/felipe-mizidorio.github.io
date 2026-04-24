@@ -22,7 +22,7 @@ const projects = (await getCollection("projects"))
             {projects.map((project) => (
                 <li>
                     <a href={`/projects/${project.id}`} class="group block">
-                        <h2 class="text-xl font-semibold group-hover:text-primary-400 transition-colors">
+                        <h2 class="text-xl font-semibold group-hover:text-accent transition-colors">
                             {project.data.title}
                         </h2>
                         <p class="mt-1 text-zinc-400 [.light_&]:text-zinc-600">
