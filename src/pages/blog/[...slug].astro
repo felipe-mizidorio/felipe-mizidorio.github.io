@@ -18,19 +18,19 @@ const { Content } = await render(post);
 
 <BaseLayout title={`${post.data.title} | Blog`} description={post.data.description}>
     <Header />
-    <main class="mx-auto max-w-3x1 px-6 py-20">
+    <main class="mx-auto max-w-3xl px-6 py-20">
         <article>
             <time
                 datetime={post.data.pubDate.toISOString()}
                 class="text-sm text-zinc-500"
             >
-                {post.data.pubDate.toLocaleDateString("pt-BR", {
+                {post.data.pubDate.toLocaleDateString("en-EU", {
                     year: "numeric",
                     month: "long",
                     day: "numeric",
                 })}
             </time>
-            <h1 class="mt-2 text-4x1 font-bold">{post.data.title}</h1>
+            <h1 class="mt-2 text-4xl font-bold">{post.data.title}</h1>
             <p class="mt-2 text-lg text-zinc-400 [.light_&]:text-zinc-600">
                 {post.data.description}
             </p>

@@ -18,9 +18,9 @@ const { Content } = await render(project);
 
 <BaseLayout title={`${project.data.title} | Projects`} description={project.data.description}>
     <Header />
-    <main class="mx-auto max-w-3x1 px-6 py-20">
+    <main class="mx-auto max-w-3xl px-6 py-20">
         <article>
-            <h1 class="text-4x1 font-bold">{project.data.title}</h1>
+            <h1 class="text-4xl font-bold">{project.data.title}</h1>
             <p class="mt-2 text-lg text-zinc-400 [.light_&]:text-zinc-600">
                 {project.data.description}
             </p>
