@@ -9,7 +9,14 @@ const recentPosts = (await getCollection("blog"))
 	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
 	.slice(0, 3);
 
-const stack = ["Python", "PyTorch", "Scikit-Learn", "Pandas", "Unity", "ML-Agents"]
+const stack = [
+	{ name: "Python", icon: "python" },
+	{ name: "PyTorch", icon: "pytorch" },
+	{ name: "Scikit-Learn", icon: "scikitlearn" }, 
+	{ name: "Pandas", icon: "pandas" },
+	{ name: "Unity", icon: "unity" },
+	{ name: "ML-Agents", icon: null }
+]
 ---
 
 <BaseLayout
@@ -103,8 +110,15 @@ const stack = ["Python", "PyTorch", "Scikit-Learn", "Pandas", "Unity", "ML-Agent
 				</h2>
 				<div class="mt-5 flex flex-wrap gap-2">
 					{stack.map((tech) => (
-						<span class="rounded-full border border-zinc-700 px-3 py-1 text-sm text-zinc-400 [.light_&]:border-zinc-200 [.light_&]:text-zinc-600">
-							{tech}
+						<span class="flex items-center gap-1.5 rounded-full border border-zinc-700 px-3 py-1 text-sm text-zinc-400 [.light_&]:border-zinc-200 [.light_&]:text-zinc-600">
+							{tech.icon && (
+								<img
+									src={`https://cdn.simpleicons.org/${tech.icon}/a1a1aa`}
+									alt={tech.name}
+									class="h-4 w-4 invert dark:invert-0"
+								/>
+							)}
+							{tech.name}
 						</span>
 					))}
 				</div>
