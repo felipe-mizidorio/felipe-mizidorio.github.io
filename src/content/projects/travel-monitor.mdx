@@ -1,0 +1,24 @@
+---
+title: "Travel Monitor"
+description: "A smart travel price monitor that scrapes Google Flights daily and sends email alerts when prices drop below your budget."
+pubDate: 2026-03-15
+technologies: ["Python", "Playwright", "GitHub Actions", "Poetry", "SMTP"]
+repoUrl: "https://github.com/felipe-mizidorio/travel-monitor"
+---
+
+## About the project
+
+Travel Monitor is a serverless flight price tracker that runs entirely on GitHub Actions. You define your trips and a maximum price in a `users.yml` file, and the pipeline checks Google Flights every day at 9:00 AM UTC — no server required.
+
+When a deal is found, you receive a formatted email alert with the price, your budget, and how much you save.
+
+### Stack used
+
+The project is built to be lightweight and infrastructure-free:
+
+- **Playwright** for browser automation and Google Flights scraping
+- **fast-flights** as the underlying Google Flights scraper library
+- **PyYAML** for reading user and trip configuration
+- **SMTP** for sending formatted HTML email alerts
+- **GitHub Actions** for daily scheduled execution and CI/CD pipeline
+- **Poetry** for dependency management
