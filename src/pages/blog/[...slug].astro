@@ -20,6 +20,9 @@ const { Content } = await render(post);
     title={`${post.data.title} | Blog`}
     description={post.data.description}
     image={post.data.heroImage ?? "/og-image.png"}
+    type="article"
+    pubDate={post.data.pubDate}
+    tags={post.data.tags}
 >
     <Header />
     <main class="mx-auto max-w-3xl px-6 py-20">
