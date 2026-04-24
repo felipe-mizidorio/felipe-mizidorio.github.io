@@ -60,6 +60,13 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
                 document.documentElement.classList.add("light");
             }
         </script>
+
+        <link
+            rel="alternate"
+            type="applications/rss+xml"
+            title="Felipe Mizidorio"
+            href="/rss.xml"
+        >
     </head>
     <body class="min-h-screen bg-zinc-950 text-zinc-100 [.light_&]:bg-white [.light_&]:text-zinc-900 antialiased">
         <slot />
