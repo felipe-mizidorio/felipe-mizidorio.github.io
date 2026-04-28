@@ -1,0 +1,31 @@
+---
+title: "SfM-MVS Pipeline"
+description: "A Python pipeline for full 3D reconstruction from raw images, covering feature extraction, sparse reconstruction, dense reconstruction, surface meshing, and evaluation."
+pubDate: 2026-04-27
+technologies: ["Python", "COLMAP", "DVC", "Poetry", "Jupyter"]
+repoUrl: "https://github.com/felipe-mizidorio/sfm-mvs-pipeline"
+---
+
+## About the project
+
+SfM-MVS Pipeline is a modular Python pipeline for 3D reconstruction from a set of images. It covers the full workflow end-to-end, from raw input images to a final evaluated 3D mesh.
+
+The pipeline runs through seven stages:
+
+1. **Feature Extraction**: SIFT-based keypoint detection and description
+2. **Feature Matching**: Exhaustive or vocabulary tree-based matching
+3. **Sparse Reconstruction (SfM)**: Incremental bundle adjustment via COLMAP
+4. **Dense Reconstruction (MVS)**: PatchMatch Stereo depth map estimation
+5. **Depth Map Fusion**: Stereo fusion into a dense point cloud
+6. **Surface Reconstruction**: Poisson Surface Reconstruction
+7. **Evaluation**: Chamfer Distance, Hausdorff Distance, and RMS metrics against a ground truth point cloud
+
+The MVS stage requires an NVIDIA GPU with CUDA 12, though the pipeline supports a `--skip-mvs` flag for sparse-only runs on CPU machines.
+
+### Stack used
+
+- **COLMAP** (via `pycolmap`) for feature extraction, matching, bundle adjustment, and MVS
+- **DVC** for data versioning and tracking of intermediate pipeline outputs
+- **Poetry** for dependency management, with optional GPU and notebook install groups
+- **Jupyter** for exploratory analysis and result visualisation
+- **Python 3.12** for all pipeline logic, evaluation metrics, and CLI entrypoints
