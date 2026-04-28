@@ -1,0 +1,21 @@
+---
+title: "Stock Forecast"
+description: "End-to-end machine learning pipeline for stock market forecasting, with automated data ingestion, model training, experiment tracking, and scheduled retraining."
+pubDate: 2026-02-15
+technologies: ["Python", "Apache Airflow", "MLflow", "DVC", "FastAPI", "Docker"]
+repoUrl: "https://github.com/felipe-mizidorio/stock-forecast"
+---
+
+## About the project
+
+Stock Forecast is an end-to-end machine learning pipeline for stock market forecasting. The goal is to automate the entire lifecycle — from data ingestion to model retraining — with a reproducible and production-ready setup.
+
+### Stack used
+
+The project is built around a modular MLOps architecture:
+
+- **Apache Airflow** for orchestrating and scheduling the data and training pipelines
+- **DVC** for data versioning and pipeline reproducibility
+- **MLflow** for experiment tracking and model registry
+- **FastAPI** for serving predictions via a REST API
+- **Docker** for containerising all services with `docker-compose`
