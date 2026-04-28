@@ -26,6 +26,7 @@ const projects = defineCollection({
         repoUrl: z.url().optional(),
         liveUrl: z.url().optional(),
         draft: z.boolean().default(false),
+        featured: z.boolean().default(false),
     }),
 });
 
