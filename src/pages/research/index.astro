@@ -1,0 +1,49 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+
+const research = (await getCollection("research"))
+    .filter((item) => !(import.meta.env.PROD && item.data.draft))
+    .sort((a, b) => b.data.startDate.valueOf() - a.data.startDate.valueOf());
+
+const fmt = (d: Date) => d.toLocaleDateString("en-US", { month: "short", year: "numeric", timeZone: "UTC" });
+---
+
+<BaseLayout title="Research | Felipe Mizidorio" description="Research projects and internships.">
+    <Header />
+    <main class="mx-auto max-w-3xl px-6 py-20">
+        <h1 class="text-3xl font-bold">Research</h1>
+
+        {research.length === 0 && (
+            <p class="mt-8 text-zinc-400">No research published.</p>
+        )}
+
+        <ul class="mt-8 space-y-8">
+            {research.map((item) => (
+                <li>
+                    <a href={`/research/${item.id}`} class="group block">
+                        <h2 class="text-xl font-semibold group-hover:text-accent transition-colors">
+                            {item.data.title}
+                        </h2>
+                        <p class="mt-1 text-sm text-zinc-500">
+                            {item.data.role} · {item.data.institution} · {fmt(item.data.startDate)} – {item.data.endDate ? fmt(item.data.endDate) : "Present"}
+                        </p>
+                        <p class="mt-1 text-zinc-400 [.light_&]:text-zinc-600">
+                            {item.data.description}
+                        </p>
+                        <div class="mt-2 flex flex-wrap gap-2">
+                            {item.data.tags.map((tag) => (
+                                <span class="rounded-full bg-zinc-800 [.light_&]:bg-zinc-100 px-3 py-1 text-xs text-zinc-300 [.light_&]:text-zinc-600">
+                                    {tag}
+                                </span>
+                            ))}
+                        </div>
+                    </a>
+                </li>
+            ))}
+        </ul>
+    </main>
+    <Footer />
+</BaseLayout>

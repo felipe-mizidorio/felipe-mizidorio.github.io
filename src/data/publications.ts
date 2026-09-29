@@ -2,6 +2,7 @@ import bibRaw from "./publications.bib?raw"
 import * as bibtex from "bibtex-parse";
 
 export type Publication = {
+    key: string;
     title: string;
     authors: string[];
     venue: string;
@@ -15,6 +16,7 @@ export type Publication = {
 const entries = bibtex.entries(bibRaw);
 
 export const publications: Publication[] = entries.map((entry) => ({
+    key: entry.key,
     title: entry.TITLE ?? "",
     authors: (entry.AUTHOR ?? "").split(" and ").map((a) => a.trim()),
     venue: entry.BOOKTITLE ?? entry.JOURNAL ?? "",
