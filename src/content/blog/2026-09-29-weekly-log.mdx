@@ -1,0 +1,33 @@
+---
+title: "Weekly log: 2026-09-29"
+description: "A summary of the week: a new learned 3D reconstruction pipeline, a leaner ArUco preprocessing stage, and a bigger personal site."
+pubDate: 2026-09-29
+tags: ["weekly-log"]
+draft: true
+---
+
+## The week in short
+
+Most of the week went into 3D reconstruction tooling. One pipeline was rebuilt from scratch around learned components, another was simplified, and this site picked up a few new sections along the way.
+
+## Building a learned reconstruction pipeline
+
+I started a new pipeline that ports the domain logic of my classic structure-from-motion and multi-view stereo project, then makes each stage swappable. Feature matching can now use either a learned matcher or classic SIFT, and dense reconstruction can use a learned multi-view stereo network or a patch-match fallback. The goal is to compare backends on the same input instead of guessing which one is better.
+
+Most of the effort went into making that comparison trustworthy. Input sizing now respects image orientation, the depth range comes from the subject's own points instead of a fixed guess, and the run manifest emits properly formatted timestamps. Late in the week I replaced marker-based cropping with a masks-first approach that crops around the subject's silhouette, which removed a tuning parameter I never liked.
+
+## Simplifying frame preprocessing
+
+The ArUco preprocessing stage went the other way: less, not more. I removed a comparison stage that was costing complexity without changing decisions, and moved subject masks to a video segmentation model that tracks the subject across frames instead of segmenting each frame alone. That gives steadier masks and fewer flickers between neighbouring frames. Type and lint errors were cleaned up at the end.
+
+## Docker and reproducibility
+
+Both projects now ship a GPU runtime image and a lighter CPU image for development. I lost some time to file ownership problems between the container and the host, which taught me to set the container user explicitly and to make sure bind-mounted cache directories are not created by root.
+
+## On this site
+
+I added a Research section, updated my profile to reflect the start of my PhD, and published project pages for both pipelines. A CI failure also surfaced: the deploy workflow was pulling the latest pnpm, whose stricter build-script policy blocked two dependencies. Pinning the pnpm version fixed it.
+
+## Next
+
+Run the swappable backends side by side on the same data, and write up what the comparison shows.
