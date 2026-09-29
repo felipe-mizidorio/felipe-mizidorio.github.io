@@ -1,0 +1,40 @@
+---
+title: "Learned SfM-MVS Pipeline"
+description: "A GPU-accelerated 3D reconstruction pipeline for neonatal cranial morphometry, combining learned feature matching and learned multi-view stereo with classic COLMAP fallbacks."
+pubDate: 2026-09-24
+technologies: ["Python", "PyTorch", "hloc", "TransMVSNet", "COLMAP", "Open3D", "Docker", "uv"]
+repoUrl: "https://github.com/felipe-mizidorio/learned-sfm-mvs-pipeline"
+---
+
+## About the project
+
+Learned SfM-MVS Pipeline is the successor of my [SfM-MVS Pipeline](/projects/sfm-mvs-pipeline). It reconstructs a metric 3D mesh of a newborn's head from a set of images, as the basis for neonatal cranial morphometry.
+
+The main change is that both core stages now have selectable backends, with learned methods as the default:
+
+| Stage | Learned (default) | Classic |
+|---|---|---|
+| SfM | hloc (ALIKED + LightGlue) | COLMAP SIFT |
+| MVS | TransMVSNet | COLMAP PatchMatch |
+
+From there, the pipeline runs through:
+
+1. **Sparse Reconstruction (SfM)**: feature extraction, matching, and camera registration, optionally restricted to the subject's foreground masks
+2. **Dense Reconstruction (MVS)**: per-view depth maps, with TransMVSNet taking each view's depth range from the subject's sparse points
+3. **Depth Map Fusion**: fusion into a dense point cloud, filtered to the subject using the frame masks
+4. **Metric Scale**: recovery of real-world scale in millimetres from ArUco markers of known size on the cap
+5. **Surface Reconstruction**: Poisson Surface Reconstruction with density trimming and largest-component cleanup
+6. **Evaluation**: Chamfer Distance, Hausdorff Distance, and RMS metrics against a ground truth point cloud
+
+It takes as input the frames and masks produced by [ArUco Frame Preprocessing](https://github.com/felipe-mizidorio/aruco-frame-preprocessing). Every run writes a manifest recording the backends used, per-stage timings, peak VRAM, and library versions, and long runs can be resumed from the fusion or dense cloud stage.
+
+### Stack used
+
+- **hloc** with **ALIKED** and **LightGlue** for learned feature extraction and matching
+- **TransMVSNet** (vendored, run with **PyTorch** on CUDA 12.8) for learned multi-view stereo
+- **COLMAP** (via `pycolmap`) for bundle adjustment and the classic SIFT and PatchMatch backends
+- **Open3D** for point cloud processing, Poisson meshing, and evaluation
+- **OpenCV** for ArUco marker detection and image processing
+- **Docker** for GPU runs, targeting an RTX 5090
+- **uv** for dependency management, with an optional install group for the learned backends
+- **pytest**, **Ruff**, and **Pyright** for testing, linting, and type checking
