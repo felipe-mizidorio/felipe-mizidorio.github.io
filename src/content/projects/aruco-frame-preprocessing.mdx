@@ -1,0 +1,31 @@
+---
+title: "ArUco Frame Preprocessing"
+description: "A Python pipeline that turns raw video into clean, ArUco marker-validated frames and foreground masks, ready for downstream 3D reconstruction."
+pubDate: 2026-04-17
+technologies: ["Python", "OpenCV", "PyTorch", "Grounded-SAM-2", "Docker", "uv"]
+repoUrl: "https://github.com/felipe-mizidorio/aruco-frame-preprocessing"
+---
+
+## About the project
+
+ArUco Frame Preprocessing is a Python pipeline that prepares video captures for 3D reconstruction. Given a video, it produces a set of clean frames validated by ArUco markers, plus a foreground mask for each frame that tools like COLMAP can use to ignore the background.
+
+The pipeline runs in four chained stages, each one reading the JSON artifact written by the previous one:
+
+1. **Frame Extraction**: pulls frames from the input video at a configurable stride
+2. **ArUco Detection**: detects ArUco markers in every frame with OpenCV
+3. **Frame Filtering**: keeps only frames with enough valid markers and acceptable sharpness
+4. **Mask Generation**: segments the subject with Grounded-SAM-2. Grounding DINO locates the subject from a text prompt once, and SAM 2 tracks it through the remaining frames
+
+The ArUco markers also act as a safety net for masking. They pick the right detection box, and every tracked mask is checked against them. If a mask loses the markers or suddenly changes size, the frame is re-prompted, and tracking restarts when that fails.
+
+A standalone utility generates printable ArUco marker sheets for capture and calibration. Session defaults live in a YAML config, and any value can be overridden from the CLI.
+
+### Stack used
+
+- **OpenCV** (`opencv-contrib-python`) for video decoding, ArUco detection, and image processing
+- **PyTorch** and **Hugging Face Transformers** for Grounding DINO and SAM 2 inference
+- **Docker** with the NVIDIA Container Toolkit for GPU runs (CUDA 13)
+- **uv** for dependency management, with console scripts for every stage
+- **Ruff**, **Pyright**, **pytest**, and **pre-commit** for linting, type checking, and testing
+- **Python 3.12** for all pipeline logic and CLI entrypoints
