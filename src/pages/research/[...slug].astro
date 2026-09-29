@@ -1,0 +1,127 @@
+---
+import { getCollection, render } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import { publications } from "../../data/publications";
+
+export async function getStaticPaths() {
+    const research = (await getCollection("research")).filter(
+        (item) => !(import.meta.env.PROD && item.data.draft),
+    );
+    return research.map((item) => ({
+        params: { slug: item.id },
+        props: item,
+    }));
+}
+
+const item = Astro.props;
+const { Content } = await render(item);
+
+const fmt = (d: Date) => d.toLocaleDateString("en-US", { month: "short", year: "numeric", timeZone: "UTC" });
+
+const related = item.data.publications.map((key) => {
+    const pub = publications.find((p) => p.key === key);
+    if (!pub) throw new Error(`research/${item.id}: unknown publication key "${key}"`);
+    return pub;
+});
+---
+
+<BaseLayout title={`${item.data.title} | Research`} description={item.data.description}>
+    <Header />
+    <main class="mx-auto max-w-3xl px-6 py-20">
+        <article>
+            <h1 class="text-4xl font-bold">{item.data.title}</h1>
+            <p class="mt-2 text-lg text-zinc-400 [.light_&]:text-zinc-600">
+                {item.data.description}
+            </p>
+
+            <dl class="mt-4 space-y-1 text-sm text-zinc-400 [.light_&]:text-zinc-600">
+                <div>
+                    <dt class="inline font-medium">Role:</dt>
+                    <dd class="inline">{item.data.role} · {item.data.institution}</dd>
+                </div>
+                <div>
+                    <dt class="inline font-medium">Period:</dt>
+                    <dd class="inline">{fmt(item.data.startDate)} – {item.data.endDate ? fmt(item.data.endDate) : "Present"}</dd>
+                </div>
+                {item.data.advisors.length > 0 && (
+                    <div>
+                        <dt class="inline font-medium">Advisors:</dt>
+                        <dd class="inline">{item.data.advisors.join(", ")}</dd>
+                    </div>
+                )}
+                {item.data.funding && (
+                    <div>
+                        <dt class="inline font-medium">Funding:</dt>
+                        <dd class="inline">{item.data.funding}</dd>
+                    </div>
+                )}
+            </dl>
+
+            <div class="mt-4 flex flex-wrap gap-2">
+                {item.data.tags.map((tag) => (
+                    <span class="rounded-full bg-zinc-800 [.light_&]:bg-zinc-100 px-3 py-1 text-xs text-zinc-300 [.light_&]:text-zinc-600">
+                        {tag}
+                    </span>
+                ))}
+            </div>
+
+            <div class="mt-4 flex gap-4 text-sm">
+                {item.data.websiteUrl && (
+                    <a
+                        href={item.data.websiteUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="text-accent hover:underline"
+                    >
+                        Website
+                    </a>
+                )}
+                {item.data.repoUrl && (
+                    <a
+                        href={item.data.repoUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="text-accent hover:underline"
+                    >
+                        Repository
+                    </a>
+                )}
+            </div>
+
+            <div class="prose prose-invert [.light_&]:prose mt-10 max-w-none">
+                <Content />
+            </div>
+
+            {related.length > 0 && (
+                <section class="mt-16">
+                    <h2 class="text-2xl font-bold">Related publications</h2>
+                    <ul class="mt-6 divide-y divide-zinc-800 [.light_&]:divide-zinc-200">
+                        {related.map((pub) => (
+                            <li class="py-6 first:pt-0">
+                                <span class="text-sm text-zinc-500">{pub.year}</span>
+                                <h3 class="mt-1 text-lg font-semibold">{pub.title}</h3>
+                                <p class="mt-1 text-sm text-zinc-400 [.light_&]:text-zinc-600">
+                                    {pub.authors.join(", ")}
+                                </p>
+                                <p class="mt-1 text-sm italic text-zinc-500">{pub.venue}</p>
+                                {pub.doi && (
+                                    <a
+                                        href={`https://doi.org/${pub.doi}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        class="mt-3 inline-block text-sm text-accent hover:underline"
+                                    >
+                                        DOI
+                                    </a>
+                                )}
+                            </li>
+                        ))}
+                    </ul>
+                </section>
+            )}
+        </article>
+    </main>
+    <Footer />
+</BaseLayout>
