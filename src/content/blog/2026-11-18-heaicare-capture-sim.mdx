@@ -1,0 +1,31 @@
+---
+title: "Building a virtual capture rig"
+description: "Why I built a simulator to choose camera count and placement before buying hardware, and what the first two weeks taught me."
+pubDate: 2026-11-18
+tags: ["heaicare", "3d-reconstruction", "simulation"]
+draft: false
+---
+
+## Why a simulator
+
+My reconstruction pipelines need images, and so far those came from video. The next step is a fixed multi-camera rig that captures every view at once. That raises questions I can't answer by guessing: how many cameras, where to put them, which lenses. Buying hardware to find out is slow and expensive, so I built [heAICare Capture Sim](/projects/heaicare-capture-sim), a virtual rig that renders the images a real one would take, with exact camera parameters and a ground-truth mesh next to them.
+
+## A renderer I can trust
+
+The whole tool is only useful if a rendered pixel lands exactly where the camera model says it should. So the first thing I built, before any GUI, was a reprojection gate: render small spheres, find their centres in the image and compare against `cv2.projectPoints`. The key detail is the half-pixel shift between pixel centres and pixel corners: with it, the error stays below a tenth of a pixel; without it, every marker is off by about two thirds of a pixel. That unshifted version stays in the tests as a negative control, so I know the gate can actually fail.
+
+The same gate later covered lens distortion. The renderer draws a wider undistorted view, then remaps it through the OpenCV distortion model, and the result still matches `projectPoints` to within a fifth of a pixel.
+
+## One engine, three front ends
+
+The simulator has a CLI, a browser GUI and a local HTTP API, and they all call the same capture function with the same fixed viewport. That came from a bug: early on, the CLI and the GUI rendered at slightly different sizes, so the same rig gave different pixels depending on where you clicked. Funnelling everything through one path fixed it for good. The API exists for sweeps: it keeps one renderer warm, so trying eight, twelve or sixteen cameras does not pay the start-up cost each time.
+
+## Real meshes are messy
+
+Moving from a procedural head to real meshes exposed a few silent failures in Open3D's OBJ reader. It drops quads without warning, can return an empty default material before the file's own, and stores textures upside down relative to how they are sampled. The procedural head's noise texture had hidden that last one completely. The fix was to triangulate polygons on load, pick the texture the triangles actually reference, and flip textures once. Lesson learned: test with a texture that has an obvious up and down.
+
+Multi-part meshes also forced a clear rule: the first material is the head and the only ground truth; eyes, eyelashes and body are rendered so they occlude like real ones, but are never scored.
+
+## Next
+
+Use the API to sweep camera count and placement, feed the captures to my reconstruction pipeline, and see how the error against ground truth changes with each rig.

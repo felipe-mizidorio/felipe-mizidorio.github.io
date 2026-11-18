@@ -1,0 +1,36 @@
+---
+title: "heAICare Capture Sim"
+description: "A virtual multi-camera capture rig that renders synthetic head images with exact camera parameters and a ground-truth mesh, to study camera count and placement for 3D reconstruction."
+pubDate: 2026-11-16
+technologies: ["Python", "Open3D", "OpenCV", "viser", "FastAPI", "Pydantic", "uv"]
+repoUrl: "https://github.com/felipe-mizidorio/heaicare-capture-sim"
+---
+
+## About the project
+
+heAICare Capture Sim is a virtual capture rig for the heAICare project. It renders synthetic images of a head from a configurable set of fixed cameras, all triggered at once, so camera count and placement can be studied before any hardware is built. The images go into my [Learned SfM-MVS Pipeline](/projects/learned-sfm-mvs-pipeline), and the reconstruction is compared against the ground-truth mesh saved with every capture.
+
+A rig is a plain list of pinhole cameras defined by datasheet values: resolution, focal length in millimetres and pixel size in micrometres. Ring and dome presets generate common layouts. Each camera can also carry lens distortion (OpenCV model), blur, gain and sensor noise, all off by default, so the same rig can be rendered ideal or realistic.
+
+One capture engine sits behind three front ends, so the same rig gives byte-identical images from any of them:
+
+1. **CLI**: `preset` generates rigs, `capture` renders every camera, `import-mesh` brings any OBJ into the world frame
+2. **GUI**: a browser rig editor with a 3D view, camera gizmos, a live preview of the selected camera and one-click capture
+3. **HTTP API**: a local FastAPI server that keeps one renderer warm, so camera-count sweeps skip the start-up cost of each capture
+
+Every capture writes the images, the camera intrinsics and extrinsics in the OpenCV convention, a copy of the rig and the ground-truth mesh. Output is written to a temporary folder and renamed only when complete, so a failed capture never leaves a partial result.
+
+Heads can be a procedural textured model or any mesh from a file, such as a MakeHuman export or a 3D scan. In a multi-part mesh, only the head surface counts as ground truth; eyes, eyelashes and body parts are rendered but never scored. A head can also be placed inside a room scenario, which adds realistic occlusion and background without touching the ground truth.
+
+The renderer is checked by a reprojection gate: rendered marker positions must match `cv2.projectPoints` to within a fraction of a pixel, with and without lens distortion.
+
+### Stack used
+
+- **Open3D** for offscreen rendering, mesh loading and ground-truth export
+- **OpenCV** for camera matrices, lens distortion and the reprojection gate
+- **viser** and **trimesh** for the browser GUI and its 3D view
+- **FastAPI** and **uvicorn** for the local capture API
+- **Pydantic** for rig and request validation
+- **uv** for dependency management, with a single `heaicare-capture-sim` console script
+- **pytest** and **Ruff** for testing and linting
+- **Python 3.13** for all logic and CLI entrypoints
